@@ -1,0 +1,13 @@
+.box-container {
+    height: calc(22dvh + 4px);
+    @apply flex flex-col justify-center items-center w-[50dvw] z-10;
+}
+
+.box-border {
+    @apply w-full h-[2px] bg-[#FFE6E6] z-10;
+}
+
+.box-content {
+    background-color: rgba(255, 230, 230, 0.1);
+    @apply flex flex-row items-center justify-center w-full h-[22dvh] z-10;
+}

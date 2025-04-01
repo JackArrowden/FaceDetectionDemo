@@ -1,3 +1,6 @@
+# Figma design
+- Link: [YoloFaceDemo](https://www.figma.com/design/PJnD2wGhnG0m50olWnb1pY/YoloFaceDemo?node-id=0-1&p=f&t=igQNBvutEc7sVlLv-0)
+
 # React + TypeScript + Vite
 
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
