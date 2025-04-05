@@ -1,0 +1,21 @@
+.about-header {
+    background-color: rgba(80, 86, 141, 0.5);
+    @apply flex justify-center items-center z-10 border-2 border-[#51F83B];
+}
+
+.about-content-cont {
+    background-color: rgba(80, 86, 141, 0.5);
+    @apply flex flex-col justify-center;
+}
+
+.about-content-header {
+    @apply flex flex-col text-[#fff];
+}
+
+.about-content-content {
+    @apply text-[#fff] text-justify;
+}
+
+.about-item {
+    @apply flex flex-row items-center w-[40%] cursor-pointer bg-[rgb(5,19,33,0.5)] hover:bg-[rgb(5,19,33,0.85)] p-[1rem] rounded-[0.75rem] mx-[1rem] my-[0.2rem];
+}
