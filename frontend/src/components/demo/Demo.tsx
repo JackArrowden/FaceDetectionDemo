@@ -143,7 +143,7 @@ function DemoPage() {
                     className="flex justify-center items-center gap-2 px-6 py-3 bg-[#51F83B] hover:bg-[#6cae63] rounded-full transition-all duration-300 cursor-pointer"
                 >
                     <p className="text-black font-semibold text-xl">Add File</p>
-                    <ArrowUp size={28} />
+                    <ArrowUp color='black' size={28} />
                 </div>
             </div>
 

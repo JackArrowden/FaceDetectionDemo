@@ -18,14 +18,14 @@ function AboutPage() {
             </div>
 
             <div className="about-content-cont z-10 rounded-xl w-9/12 my-1 p-6">
-                <p className="about-content-header text-4xl mb-2">What is YOLO FaceV2?</p>
-                <p className="about-content-content text-xl mt-2">
-                    YOLO Face V2 is an upgraded version of YOLOv5, designed to enhance face detection performance under challenging conditions such as varying scales, angles, or partial occlusions. As a modern and optimized version in the field of facial recognition, YOLO Face V2 was selected by our team to be featured in this demo. With its user-friendly and intuitive interface, the system allows users to obtain face detection results directly from the uploaded original image. This demo not only demonstrates the model’s effectiveness in real-world scenarios but also helps users better understand the strengths and limitations of YOLO Face V2 across different conditions.
+                <p className="about-content-header text-4xl mb-2 text-white">What is YOLO FaceV2?</p>
+                <p className="about-content-content text-xl mt-2 text-white">
+                    As a variant of YOLOv5, YOLO Face V2 was designed to enhance face detection performance under challenging conditions such as varying scales, angles, or partial occlusions. As a modern and optimized version in the field of facial recognition, YOLO Face V2 was selected by our team to be featured in this demo. With its user-friendly and intuitive interface, the system allows users to obtain face detection results directly from the uploaded original image. This demo not only demonstrates the model’s effectiveness in real-world scenarios but also helps users better understand the strengths and limitations of YOLO Face V2 across different conditions.
                 </p>
             </div>
 
             <div className="flex flex-col justify-center z-10 rounded-xl w-9/12 my-1 px-6">
-                <p className="about-content-header text-4xl mb-2">Our team</p>
+                <p className="about-content-header text-4xl mb-2 text-white">Our team</p>
                 <div className="mt-2 flex flex-row justify-center flex-wrap">
                     {teamInfo.map((member, index) => (
                         <div 
@@ -37,8 +37,8 @@ function AboutPage() {
                                 <UserRound size={32} color='black'/>  
                             </div>
                             <div key={index} className="flex flex-col">
-                                <p className="text-xl">{member.name}</p>
-                                <p className="text-xl">{member.id}</p>
+                                <p className="text-xl text-white">{member.name}</p>
+                                <p className="text-xl text-white">{member.id}</p>
                             </div>
                         </div>
                     ))}
