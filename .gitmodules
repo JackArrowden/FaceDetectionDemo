@@ -1,0 +1,3 @@
+[submodule "backend/YOLO-FaceV2"]
+	path = backend/YOLO-FaceV2
+	url = https://github.com/Krasjet-Yu/YOLO-FaceV2.git
