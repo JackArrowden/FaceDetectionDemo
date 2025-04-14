@@ -4,13 +4,20 @@ import numpy as np
 from fastapi import FastAPI, File, UploadFile
 from fastapi.responses import StreamingResponse, JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
-from models.experimental import attempt_load
-from 'YOLO-FaceV2'.utils.general import check_img_size, non_max_suppression, scale_coords
-from YOLO-FaceV2.utils.plots import plot_one_box
-from YOLO-FaceV2.utils.torch_utils import select_device
-from YOLO-FaceV2.utils.datasets import letterbox
-import io
+
+import sys
 import os
+
+# Add YOLOFaceV2 to sys.path
+sys.path.append(os.path.abspath("YOLOFaceV2"))
+
+from models.experimental import attempt_load
+from utils.general import check_img_size, non_max_suppression, scale_coords
+from utils.plots import plot_one_box
+from utils.torch_utils import select_device
+from utils.datasets import letterbox
+import io
+
 import tempfile
 import base64
 
@@ -26,7 +33,7 @@ app.add_middleware(
 )
 
 # Parameter configuration
-WEIGHTS = "YOLO-FaceV2/best.pt"
+WEIGHTS = "best.pt"
 IMG_SIZE = 640
 CONF_THRES = 0.25
 IOU_THRES = 0.45
