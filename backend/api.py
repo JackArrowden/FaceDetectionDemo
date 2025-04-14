@@ -5,10 +5,10 @@ from fastapi import FastAPI, File, UploadFile
 from fastapi.responses import StreamingResponse, JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
 from models.experimental import attempt_load
-from utils.general import check_img_size, non_max_suppression, scale_coords
-from utils.plots import plot_one_box
-from utils.torch_utils import select_device
-from utils.datasets import letterbox
+from 'YOLO-FaceV2'.utils.general import check_img_size, non_max_suppression, scale_coords
+from YOLO-FaceV2.utils.plots import plot_one_box
+from YOLO-FaceV2.utils.torch_utils import select_device
+from YOLO-FaceV2.utils.datasets import letterbox
 import io
 import os
 import tempfile
@@ -16,7 +16,7 @@ import base64
 
 app = FastAPI()
 
-# Thêm CORS middleware
+# Add CORS middleware
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["http://localhost:5173"],
@@ -25,14 +25,14 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Cấu hình tham số
-WEIGHTS = "best.pt"
+# Parameter configuration
+WEIGHTS = "YOLO-FaceV2/best.pt"
 IMG_SIZE = 640
 CONF_THRES = 0.25
 IOU_THRES = 0.45
 DEVICE = ""
 
-# Khởi tạo mô hình
+# Model initialization
 device = select_device(DEVICE)
 model = attempt_load(WEIGHTS, map_location=device)
 stride = int(model.stride.max()) * 2
@@ -43,13 +43,13 @@ if half:
 names = model.module.names if hasattr(model, 'module') else model.names
 colors = [[np.random.randint(0, 255) for _ in range(3)] for _ in names]
 
-# Khởi động mô hình
+# Start model
 if device.type != 'cpu':
     model(torch.zeros(1, 3, imgsz, imgsz).to(device).type_as(next(model.parameters())))
 
-# Hàm xử lý ảnh/frame
+# Image processing function
 def process_image(img0):
-    # Chuẩn bị ảnh
+    # Image preprocessing
     img = letterbox(img0, new_shape=imgsz, stride=stride)[0]
     img = img[:, :, ::-1].transpose(2, 0, 1)  # BGR -> RGB, HWC -> CHW
     img = np.ascontiguousarray(img)
@@ -59,12 +59,12 @@ def process_image(img0):
     if img.ndimension() == 3:
         img = img.unsqueeze(0)
 
-    # Dự đoán
+    # Inference
     with torch.no_grad():
         pred = model(img)[0]
         pred = non_max_suppression(pred, CONF_THRES, IOU_THRES)
 
-    # Xử lý kết quả
+    # Post-processing
     num_faces = 0
     if pred[0] is not None and len(pred[0]):
         num_faces = len(pred[0])  # Số lượng khuôn mặt
@@ -75,34 +75,34 @@ def process_image(img0):
 
     return img0, num_faces
 
-# Hàm kiểm tra loại file
+# File type checking function
 def is_image_file(filename: str) -> bool:
     image_extensions = {".jpg", ".jpeg", ".png", ".bmp", ".gif"}
     return os.path.splitext(filename.lower())[1] in image_extensions
 
-# Endpoint duy nhất xử lý cả ảnh và video
+# API endpoint for file detection
 @app.post("/detect")
 async def detect_file(file: UploadFile = File(...)):
-    # Đọc dữ liệu file
+    # File reading
     file_bytes = await file.read()
     filename = file.filename
 
-    # Kiểm tra loại file dựa trên phần mở rộng
+    # File type checking based on extension
     if is_image_file(filename):
-        # Xử lý ảnh
+        # Image processing
         nparr = np.frombuffer(file_bytes, np.uint8)
         img0 = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
         if img0 is None:
             return JSONResponse(content={"error": "Không thể đọc file ảnh"}, status_code=400)
 
-        # Xử lý ảnh
+        # Image processing
         img_result, num_faces = process_image(img0)
 
-        # Chuyển ảnh thành base64 để gửi trong JSON
+        # Convert image to base64
         _, img_encoded = cv2.imencode(".jpg", img_result)
         img_base64 = base64.b64encode(img_encoded).decode("utf-8")
 
-        # Trả về JSON chứa ảnh và số lượng khuôn mặt
+        # Return JSON response with image and number of faces
         return JSONResponse(content={
             "type": "image",
             "data": img_base64,
@@ -110,31 +110,31 @@ async def detect_file(file: UploadFile = File(...)):
         })
 
     else:
-        # Giả định là video
+        # Process video file
         with tempfile.NamedTemporaryFile(delete=False, suffix=".mp4") as temp_input:
             temp_input.write(file_bytes)
             temp_input_path = temp_input.name
 
-        # Mở video
+        # Open video
         cap = cv2.VideoCapture(temp_input_path)
         if not cap.isOpened():
             os.remove(temp_input_path)
             return JSONResponse(content={"error": "Không thể mở video"}, status_code=400)
 
-        # Lấy thông tin video
+        # Get video properties
         fps = int(cap.get(cv2.CAP_PROP_FPS))
         width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
         height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
 
-        # Tạo file tạm thời để lưu video output
+        # Create temporary output file
         with tempfile.NamedTemporaryFile(delete=False, suffix=".mp4") as temp_output:
             temp_output_path = temp_output.name
 
-        # Khởi tạo VideoWriter
+        # Intialize video writer
         fourcc = cv2.VideoWriter_fourcc(*"mp4v")
         out = cv2.VideoWriter(temp_output_path, fourcc, fps, (width, height))
 
-        # Xử lý từng frame và đếm tổng số khuôn mặt
+        # Process video frames
         total_num_faces = 0
         frame_count = 0
         while cap.isOpened():
@@ -142,25 +142,25 @@ async def detect_file(file: UploadFile = File(...)):
             if not ret:
                 break
 
-            # Xử lý frame
+            # Process each frame
             processed_frame, num_faces = process_image(frame)
             out.write(processed_frame)
             total_num_faces += num_faces
             frame_count += 1
 
-        # Giải phóng tài nguyên
+        # Resource cleanup
         cap.release()
         out.release()
 
-        # Đọc video output thành base64
+        # Read video file and convert to base64
         with open(temp_output_path, "rb") as video_file:
             video_base64 = base64.b64encode(video_file.read()).decode("utf-8")
 
-        # Xóa file tạm
+        # Clear temporary files
         os.remove(temp_input_path)
         os.remove(temp_output_path)
 
-        # Trả về JSON chứa video và số lượng khuôn mặt trung bình
+        # Return JSON response with video and average number of faces
         avg_num_faces = total_num_faces / frame_count if frame_count > 0 else 0
         return JSONResponse(content={
             "type": "video",
