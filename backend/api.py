@@ -85,7 +85,7 @@ def process_image(img0):
 # File type checking function
 def is_image_file(filename: str) -> bool:
     image_extensions = {".jpg", ".jpeg", ".png", ".bmp", ".gif"}
-    return os.path.splitext(filename.lower())[1] in image_extensions
+    return os.path.splitext(filename.lower())[-1] in image_extensions
 
 # API endpoint for file detection
 @app.post("/detect")
@@ -138,7 +138,7 @@ async def detect_file(file: UploadFile = File(...)):
             temp_output_path = temp_output.name
 
         # Intialize video writer
-        fourcc = cv2.VideoWriter_fourcc(*"mp4v")
+        fourcc = cv2.VideoWriter_fourcc(*"avc1")
         out = cv2.VideoWriter(temp_output_path, fourcc, fps, (width, height))
 
         # Process video frames
