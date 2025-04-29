@@ -3,7 +3,6 @@ import bg_img from '../../assets/bg/2.jpg';
 import BackBtn from '../about/BackBtn';
 import './demo.css';
 import { useState, useRef, useEffect } from 'react';
-import ReactPlayer from 'react-player';
 
 function DemoPage() {
     const [selectedFile, setSelectedFile] = useState<File | null>(null);
@@ -15,12 +14,10 @@ function DemoPage() {
     const [faceCount, setFaceCount] = useState<number>(0);
     const [showOriginal, setShowOriginal] = useState<boolean>(false);
     const fileInputRef = useRef<HTMLInputElement>(null);
-    const [testUrl, setTestUrl] = useState<string | null>(null);
 
-    // Hàm xử lý khi người dùng nhấn nút "Add File"
     const handleAddFileClick = () => {
         if (fileInputRef.current) {
-            fileInputRef.current.click(); // Mở input file
+            fileInputRef.current.click();
         }
     };
 
@@ -46,10 +43,9 @@ function DemoPage() {
 
     const sendFileToApi = async (file: File) => {
         const formData = new FormData();
-        formData.append('file', file); // Thêm file vào FormData
+        formData.append('file', file);
 
         try {
-            // Gửi yêu cầu đến API
             const response = await fetch('http://localhost:8000/detect', {
                 method: 'POST',
                 body: formData,
@@ -59,42 +55,25 @@ function DemoPage() {
                 const result = await response.json();
                 const { type, data, num_faces } = result;
 
-                let dataUrl: string;
-                if (type === 'image') {
-                    // Đối với ảnh, giữ nguyên cách xử lý base64
-                    dataUrl = `data:image/jpeg;base64,${data}`;
-                } else {
-                    // Đối với video, chuyển base64 thành Blob và tạo URL từ Blob
-                    const byteCharacters = atob(data); // Giải mã base64 thành chuỗi nhị phân
-                    const byteNumbers = new Array(byteCharacters.length);
-                    for (let i = 0; i < byteCharacters.length; i++) {
-                        byteNumbers[i] = byteCharacters.charCodeAt(i);
-                    }
-                    const byteArray = new Uint8Array(byteNumbers);
-                    const blob = new Blob([byteArray], { type: 'video/mp4' });
-                    console.log('blobbbbbbbbbbb', blob)
-                    dataUrl = URL.createObjectURL(blob); // Tạo URL từ Blob
-                }
+                const dataUrl = type === 'image' ? `data:image/jpeg;base64,${data}` : `data:video/mp4;base64,${data}`;
 
-                setResultData(dataUrl); // Lưu URL dữ liệu kết quả
-                setResultType(type); // Lưu loại file
-                setFaceCount(Math.round(num_faces)); // Lưu số khuôn mặt (làm tròn nếu là video)
-                setIsApiComplete(true); // Đánh dấu API đã hoàn thành
-                setProgress(100); // Đặt progress thành 100%
-                console.log(dataUrl)
+                setResultData(dataUrl);
+                setResultType(type);
+                setFaceCount(Math.round(num_faces));
+                setIsApiComplete(true);
+                setProgress(100);
             } else {
                 console.error('API error:', response.statusText);
-                setProgress(0); // Reset progress nếu có lỗi
+                setProgress(0);
             }
         } catch (error) {
             console.error('Error sending file to API:', error);
-            setProgress(0); // Reset progress nếu có lỗi
+            setProgress(0);
         }
     };
 
-    // Hàm xử lý khi người dùng nhấn nút "Reverse"
     const handleReverse = () => {
-        setShowOriginal((prev) => !prev); // Chuyển đổi giữa ảnh gốc và ảnh đã detect
+        setShowOriginal((prev) => !prev);
     };
 
     const handleDownload = () => {
@@ -133,49 +112,20 @@ function DemoPage() {
         };
     }, [resultData, originalImage]);
 
-    useEffect(() => {
-        const loadVideo = async () => {
-            try {
-                // Fetch file từ public
-                await fetch('9.mp4').then(res => {
-                    if (!res.ok) {
-                        throw new Error('Failed to fetch video file');
-                    }
-                    return res.blob();
-                }).then(blob => {
-                    const url = URL.createObjectURL(blob);  
-                    console.log('Video URL:', url); // Log URL để kiểm tra
-                    setTestUrl(url); // Lưu URL vào state
-                    console.log('Blob22222:', blob); // Log blob để kiểm tra
-                })
-            } catch (error) {
-                console.error('Error loading video:', error);
-            }
-        };
-
-        loadVideo();
-
-        // Cleanup
-        return () => {
-            if (testUrl) {
-                URL.revokeObjectURL(testUrl);
-            }
-        };
-    }, []);
-
     return (
         <div className="h-full w-full overflow-hidden flex flex-col relative justify-center items-center">
             <img src={bg_img} alt="" className="web-bg" />
             <BackBtn />
+
             <input
                 type="file"
                 ref={fileInputRef}
                 onChange={handleFileChange}
                 accept="image/*,video/*" // Chỉ cho phép ảnh và video
                 className="hidden"
+                aria-label='fileInput'
             />
 
-            {/* Hiển thị giao diện */}
             <div className="flex items-center gap-4 z-10">
                 {selectedFile && (
                     <div className="flex justify-start items-center bg-[rgba(237,256,236,0.1)] w-[30dvw] h-12 rounded-xl border-1 border-[#51F83B]">
@@ -241,8 +191,8 @@ function DemoPage() {
                         className="max-w-144 max-h-72 object-contain rounded-lg z-10"
                     />
                 ) :  (
-                    <ReactPlayer
-                        url={testUrl!}
+                    <video
+                        src={resultData!}
                         controls
                         // autoPlay
                         className="max-w-144 max-h-72 object-contain rounded-lg z-10"
@@ -250,7 +200,7 @@ function DemoPage() {
                 )) 
             }
         </div>
-    );
+    )
 }
 
-export default DemoPage;
+export default DemoPage
