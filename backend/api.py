@@ -41,8 +41,10 @@ def create_app():
 
         if app.state.file_processor.is_image_file(filename):
             result, error = app.state.file_processor.process_image_file(file_bytes)
-        else:
+        elif app.state.file_processor.is_video_file(filename):
             result, error = app.state.file_processor.process_video_file(file_bytes)
+        else:
+            return JSONResponse(content={"error": "Unsupported file type"}, status_code=403)
 
         if error:
             return JSONResponse(content={"error": error}, status_code=400)
@@ -51,7 +53,7 @@ def create_app():
     return app
 
 class FaceDetector:
-    def __init__(self, weights="best.pt", img_size=640, conf_thres=0.25, iou_thres=0.45, device=""):
+    def __init__(self, weights="best.pt", img_size=640, conf_thres=0.5, iou_thres=0.45, device=""):
         self.device = select_device(device)
         self.model = attempt_load(weights, map_location=self.device)
         self.stride = int(self.model.stride.max()) * 2
@@ -97,7 +99,10 @@ class FileProcessor:
         self.detector = detector
 
     def is_image_file(self, filename: str) -> bool:
-        return os.path.splitext(filename.lower())[-1] in {".jpg", ".jpeg", ".png", ".bmp", ".gif"}
+        return os.path.splitext(filename.lower())[-1] in {'.bmp', '.jpg', '.jpeg', '.png', '.tif', '.tiff', '.dng', '.webp', '.mpo'}
+    
+    def is_video_file(self, filename: str) -> bool:
+        return os.path.splitext(filename.lower())[-1] in {'.mov', '.avi', '.mp4', '.mpg', '.mpeg', '.m4v', '.wmv', '.mkv'}
 
     def process_image_file(self, file_bytes: bytes):
         nparr = np.frombuffer(file_bytes, np.uint8)
