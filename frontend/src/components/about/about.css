@@ -1,3 +1,7 @@
+.page-content {
+    @apply flex flex-col items-center justify-center w-[100dvw] z-10;
+}
+
 .about-header {
     background-color: rgba(80, 86, 141, 0.5);
     @apply flex justify-center items-center z-10 border-2 border-[#51F83B];
@@ -18,4 +22,104 @@
 
 .about-item {
     @apply flex flex-row items-center w-[40%] cursor-pointer bg-[rgb(5,19,33,0.5)] hover:bg-[rgb(5,19,33,0.85)] p-[1rem] rounded-[0.75rem] mx-[1rem] my-[0.2rem];
+}
+
+@media (max-width: 1180px) {
+    .about-header {
+        margin-top: 24px;
+    }
+
+    .about-header > p {
+        font-size: 2rem;
+        line-height: 1.1;
+    }
+
+    .about-item {
+        @apply w-[45%];
+    }
+
+    .about-item > div > p {
+        font-size: 18px;
+        line-height: 1.2;
+        margin: 2px 0;
+    }
+}
+
+@media (max-width: 972px) {
+    .about-header {
+        margin: 24px 0;
+    }
+
+    .about-header > p {
+        font-size: 2rem;
+        line-height: 1.1;
+    }
+
+    .about-item {
+        @apply w-[90%];
+    }
+
+    .about-item > div > p {
+        font-size: 16px;
+        line-height: 1.2;
+        margin: 2px 0;
+    }
+
+    .page-content {
+        overflow-y: auto;
+    }
+
+    .about-content-header {
+        margin-top: 8px;
+        font-size: 24px;
+        line-height: 1;
+    }
+
+    .about-content-content {
+        font-size: 16px;
+        line-height: 1.2;
+    }
+
+    .about-content-cont, .about-content-cont2 {
+        width: auto;
+        margin: 8px 16px 0 16px;
+    }
+
+    .about-item {
+        width: 38dvw;
+        padding: 0.5rem;
+    }
+
+    .about-subitem {
+        @apply w-[3rem] h-[3rem];
+    }
+
+    .about-subitem > svg {
+        width: 24px;
+        height: 24px;
+    }
+}
+
+@media (max-width: 700px) {
+    .page-content {
+        margin-top: 10dvh;
+        padding-top: 15dvh;
+        padding-bottom: 2dvh;
+    } 
+
+    .about-item {
+        @apply w-[90%];
+    }
+}
+
+@media (max-width: 512px) {
+    .page-content {
+        padding-top: 40dvh;
+    }
+
+    .about-header > p {
+        font-size: 1.5rem;
+        line-height: 1.1;
+        margin: 8px 32px;
+    }
 }

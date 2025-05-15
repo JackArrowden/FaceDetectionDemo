@@ -1,0 +1,11 @@
+@media (max-width: 972px) {
+    .backbtn {
+        top: 2dvh;
+        left: 2dvw;
+    }
+
+    .backbtn > p {
+        font-size: 1.75rem;
+        line-height: 1;
+    }
+}

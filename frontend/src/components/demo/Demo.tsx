@@ -151,7 +151,7 @@ function DemoPage() {
                         )}
                         <div
                             onClick={() => handleAddFileClick()}
-                            className="flex justify-center items-center gap-2 px-6 py-3 bg-[#51F83B] hover:bg-[#6cae63] rounded-full transition-all duration-300 cursor-pointer"
+                            className="flex justify-center items-center px-6 py-3 bg-[#51F83B] hover:bg-[#6cae63] rounded-full cursor-pointer"
                         >
                             <p className="text-black font-semibold text-xl">Add File</p>
                             <ArrowUp color='black' size={28} />

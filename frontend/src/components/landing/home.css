@@ -11,3 +11,24 @@
     background-color: rgba(255, 230, 230, 0.1);
     @apply flex flex-row items-center justify-center w-full h-[22dvh] z-10;
 }
+
+@media (max-width: 800px) {
+    .box-container {
+        @apply w-[90dvw];
+    }
+}
+
+@media (max-width: 450px) {
+    .box-content {
+        @apply h-[40dvh];
+    }
+    
+    .box-container {
+        height: calc(60dvh + 4px);
+        @apply w-[90dvw];
+    }
+
+    .box-content {
+        @apply flex-col justify-around;
+    }
+}
